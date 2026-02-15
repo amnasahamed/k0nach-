@@ -10,8 +10,26 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       proxy: {
         '/api': {
-          target: 'http://localhost:3000',
+          target: process.env.VITE_API_URL || 'http://localhost:3000',
           changeOrigin: true,
+        },
+      },
+    },
+    build: {
+      outDir: 'dist',
+      sourcemap: mode === 'development',
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: mode === 'production',
+        },
+      },
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            recharts: ['recharts'],
+          },
         },
       },
     },
@@ -21,19 +39,21 @@ export default defineConfig(({ mode }) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
         manifest: {
-          name: 'k0nach!',
+          name: 'k0nach! - Assignment & Payment Management',
           short_name: 'k0nach!',
-          description: 'Assignment & Payment Management System',
-          theme_color: '#0284c7',
+          description: 'Professional Assignment & Payment Management System',
+          theme_color: '#007AFF',
           background_color: '#F2F2F7',
           display: 'standalone',
           scope: '/',
           start_url: '/',
+          categories: ['productivity'],
           icons: [
             {
               src: 'pwa-192x192.png',
               sizes: '192x192',
               type: 'image/png',
+              purpose: 'any',
             },
             {
               src: 'pwa-512x512.png',
@@ -76,13 +96,13 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     define: {
-      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+      'process.env.API_URL': JSON.stringify(env.VITE_API_URL),
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
-      }
-    }
+      },
+    },
   };
 });

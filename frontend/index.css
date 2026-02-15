@@ -47,12 +47,12 @@ body {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 input, select, textarea {
-  font-size: 16px !important; /* Prevent zoom on iOS */
+  font-size: 16px !important;
 }
 
 /* Hide spinner controls for number inputs */
@@ -63,17 +63,7 @@ input[type=number]::-webkit-inner-spin-button {
 }
 
 input[type=number] {
-  -moz-appearance: textfield; /* Firefox */
-}
-
-/* Prevent scroll from changing number input values */
-input[type=number] {
   -moz-appearance: textfield;
-}
-
-input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
 }
 
 input[type=number]:focus {
@@ -81,7 +71,7 @@ input[type=number]:focus {
   box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
 }
 
-/* Apple-style animations */
+/* Enhanced Apple-style animations */
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -124,6 +114,24 @@ input[type=number]:focus {
   }
 }
 
+@keyframes spin-loader {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 122, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
+  }
+}
+
 .animate-slide-up {
   animation: slideFromBottom 0.35s cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -134,6 +142,14 @@ input[type=number]:focus {
 
 .animate-scale-in {
   animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-spin-loader {
+  animation: spin-loader 0.8s linear infinite;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s infinite;
 }
 
 /* Apple-style focus rings */
@@ -148,7 +164,11 @@ input:focus, select:focus, textarea:focus {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Glassmorphism effect */
+.transition-smooth {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Glassmorphism effect - enhanced */
 .glass {
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: saturate(180%) blur(20px);
@@ -159,6 +179,12 @@ input:focus, select:focus, textarea:focus {
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 /* Premium Mesh Gradients */
@@ -195,6 +221,14 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 20px rgba(0, 122, 255, 0.4);
 }
 
+.shadow-glow-success {
+  box-shadow: 0 0 20px rgba(52, 199, 89, 0.4);
+}
+
+.shadow-deep {
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+}
+
 /* Interactive Feedback */
 .hover-lift {
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -202,6 +236,10 @@ input:focus, select:focus, textarea:focus {
 
 .hover-lift:hover {
   transform: translateY(-4px);
+}
+
+.hover-lift:active {
+  transform: translateY(-2px);
 }
 
 /* Shimmer Effect */
@@ -212,6 +250,13 @@ input:focus, select:focus, textarea:focus {
 
 .shimmer {
   background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.1) 50%, transparent 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Loading skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
@@ -237,4 +282,20 @@ input:focus, select:focus, textarea:focus {
 }
 .ease-apple {
   transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Utility classes for loading states */
+.is-loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Form improvements */
+.form-input-focus {
+  @apply focus:ring-2 focus:ring-primary-500/20 focus:bg-white focus:border-primary-300;
+}
+
+/* Success state indicator */
+.input-success {
+  @apply ring-2 ring-success-200 bg-success-50;
 }

@@ -26,7 +26,6 @@ const AdminLogin: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // Use AuthContext login
         login(data.token, { role: 'admin' });
         navigate('/dashboard');
       } else {
@@ -41,20 +40,20 @@ const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-secondary-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-secondary-50 to-secondary-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mb-4 text-primary-600 shadow-sm">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl flex items-center justify-center mb-4 shadow-ios-lg hover-lift">
+            <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-secondary-900 tracking-tight">Admin Portal</h1>
-          <p className="text-secondary-500 mt-2">Secure access for administrators</p>
+          <h1 className="text-3xl font-bold text-secondary-900 tracking-tight">Admin Portal</h1>
+          <p className="text-secondary-500 mt-2 text-sm">Secure access for administrators</p>
         </div>
 
-        <Card className="shadow-lg">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <Card variant="elevated" className="shadow-premium">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <Input
               label="Password"
               type="password"
@@ -63,24 +62,30 @@ const AdminLogin: React.FC = () => {
               placeholder="Enter admin key"
               required
               autoFocus
-              className="text-lg tracking-widest"
+              fullWidth
               error={error}
+              leftIcon={
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              }
             />
 
             <Button
               type="submit"
               variant="primary"
-              className="w-full py-3 text-base shadow-md hover:shadow-lg transition-all"
+              className="w-full"
+              size="lg"
               isLoading={loading}
               disabled={password.length === 0}
             >
-              Authenticate
+              {loading ? 'Authenticating...' : 'Authenticate'}
             </Button>
           </form>
         </Card>
 
         <p className="text-center text-xs text-secondary-400 mt-8">
-          k0nach! &copy; {new Date().getFullYear()}
+          k0nach! Admin v1.0 &copy; {new Date().getFullYear()}
         </p>
       </div>
     </div>

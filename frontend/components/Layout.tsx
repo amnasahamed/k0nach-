@@ -51,21 +51,21 @@ const Layout: React.FC = () => {
   return (
     <ToastContext.Provider value={{ addToast }}>
       <SearchContext.Provider value={{ openSearch: () => setSearchOpen(prev => !prev) }}>
-        <div className="min-h-screen bg-background text-secondary-900 font-sans selection:bg-primary-500/20">
+        <div className="min-h-screen bg-secondary-50 text-secondary-900 font-sans selection:bg-primary-500/20">
           <ToastContainer toasts={toasts} removeToast={removeToast} />
           <GlobalSearch isOpen={searchOpen} onOpenChange={setSearchOpen} />
           <PWAInstallPrompt />
 
           {/* Desktop Header */}
-          <header className="fixed top-0 inset-x-0 z-40 hidden md:block bg-white/80 backdrop-blur-md border-b border-secondary-200">
+          <header className="fixed top-0 inset-x-0 z-40 hidden md:block bg-white/80 backdrop-blur-md border-b border-secondary-200 shadow-sm transition-all duration-300 ease-apple">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex justify-between items-center h-16">
                 {/* Logo / Brand */}
                 <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigate('/dashboard')}>
-                  <div className="w-8 h-8 rounded-apple bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-ios group-hover:shadow-ios-md transition-all">
+                  <div className="w-10 h-10 rounded-apple bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-ios group-hover:shadow-glow-primary transition-all duration-300">
                     <span className="text-white font-bold text-lg">T</span>
                   </div>
-                  <h1 className="text-lg font-bold text-secondary-900 tracking-tight group-hover:text-primary-600 transition-colors">k0nach!</h1>
+                  <h1 className="text-lg font-bold text-secondary-900 tracking-tight group-hover:text-primary-600 transition-colors duration-300">k0nach!</h1>
                 </div>
 
                 {/* Navigation */}
@@ -75,9 +75,9 @@ const Layout: React.FC = () => {
                       key={item.to}
                       to={item.to}
                       className={({ isActive }) => `
-                      inline-flex items-center px-3 py-2 rounded-apple text-sm font-medium transition-all duration-200
+                      inline-flex items-center px-4 py-2 rounded-apple text-sm font-medium transition-all duration-200 ease-apple
                       ${isActive
-                          ? 'text-primary-700 bg-primary-50'
+                          ? 'text-primary-700 bg-primary-50 shadow-sm'
                           : 'text-secondary-600 hover:text-secondary-900 hover:bg-secondary-50'}
                     `}
                     >
@@ -90,19 +90,19 @@ const Layout: React.FC = () => {
                 <div className="flex items-center gap-2 pl-6 border-l border-secondary-200 ml-6">
                   <button
                     onClick={() => setSearchOpen(prev => !prev)}
-                    className="inline-flex items-center gap-2 px-3 py-2 text-sm text-secondary-500 hover:text-secondary-700 bg-secondary-50 hover:bg-secondary-100 rounded-apple transition-colors"
+                    className="inline-flex items-center gap-2 px-3 py-2 text-sm text-secondary-500 hover:text-secondary-700 bg-secondary-50 hover:bg-secondary-100 rounded-apple transition-colors duration-200"
                     title="Search (Cmd+K)"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    <kbd className="text-[10px] text-secondary-400 font-medium bg-white px-1.5 py-0.5 rounded border border-secondary-200">
+                    <kbd className="text-[10px] text-secondary-400 font-medium bg-white px-1.5 py-0.5 rounded border border-secondary-200 hidden sm:inline">
                       {navigator.platform.includes('Mac') ? '⌘K' : 'Ctrl+K'}
                     </kbd>
                   </button>
                   <button
                     onClick={handleAdminLogout}
-                    className="inline-flex items-center justify-center px-4 py-2 border border-secondary-200 shadow-ios text-sm font-medium rounded-apple text-secondary-700 bg-white hover:bg-secondary-50 hover:text-secondary-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                    className="inline-flex items-center justify-center px-4 py-2 border border-secondary-200 shadow-ios text-sm font-medium rounded-apple text-secondary-700 bg-white hover:bg-secondary-50 hover:text-secondary-900 hover:shadow-ios-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200"
                   >
                     Log out
                   </button>
@@ -112,17 +112,17 @@ const Layout: React.FC = () => {
           </header>
 
           {/* Mobile Header (Title Only) */}
-          <header className="md:hidden sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-secondary-200 px-4 h-14 flex items-center justify-between">
+          <header className="md:hidden sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-secondary-200 shadow-sm px-4 h-14 flex items-center justify-between transition-all duration-300 ease-apple">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-apple bg-primary-600 flex items-center justify-center">
-                <span className="text-white font-bold">T</span>
+              <div className="w-8 h-8 rounded-apple bg-primary-600 flex items-center justify-center shadow-ios">
+                <span className="text-white font-bold text-sm">T</span>
               </div>
-              <h1 className="text-lg font-semibold text-secondary-900">{getPageTitle()}</h1>
+              <h1 className="text-base font-semibold text-secondary-900">{getPageTitle()}</h1>
             </div>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setSearchOpen(prev => !prev)}
-                className="p-2 text-secondary-400 hover:text-secondary-600 transition-colors"
+                className="p-2 text-secondary-400 hover:text-secondary-600 transition-colors duration-200"
                 title="Search"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -131,7 +131,7 @@ const Layout: React.FC = () => {
               </button>
               <button
                 onClick={handleAdminLogout}
-                className="text-xs font-medium text-secondary-500 hover:text-red-600"
+                className="text-xs font-medium text-secondary-500 hover:text-danger-600 transition-colors duration-200"
               >
                 Logout
               </button>
@@ -144,7 +144,7 @@ const Layout: React.FC = () => {
           </main>
 
           {/* Mobile Bottom Navigation */}
-          <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-secondary-200 z-50 pb-safe shadow-[0_-1px_10px_rgba(0,0,0,0.05)]">
+          <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-secondary-200 z-50 pb-safe shadow-[0_-2px_10px_rgba(0,0,0,0.08)] transition-all duration-300 ease-apple">
             <div className="grid grid-cols-5 h-16">
               {navItems.slice(0, 5).map(item => {
                 const isActive = location.pathname === item.to;
@@ -152,10 +152,10 @@ const Layout: React.FC = () => {
                   <NavLink
                     key={item.to}
                     to={item.to}
-                    className={`flex flex-col items-center justify-center gap-1 transition-colors ${isActive ? 'text-primary-600' : 'text-secondary-400 hover:text-secondary-600'}`}
+                    className={`flex flex-col items-center justify-center gap-1 transition-all duration-200 ease-apple ${isActive ? 'text-primary-600' : 'text-secondary-400 hover:text-secondary-600'}`}
                   >
                     <svg
-                      className="w-6 h-6"
+                      className={`transition-all duration-200 ${isActive ? 'w-6 h-6' : 'w-5 h-5'}`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -163,7 +163,7 @@ const Layout: React.FC = () => {
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                     </svg>
-                    <span className="text-[10px] font-medium">
+                    <span className={`text-[10px] font-medium transition-all duration-200 ${isActive ? 'font-semibold' : ''}`}>
                       {item.label === 'Dashboard' ? 'Home' : item.label}
                     </span>
                   </NavLink>
