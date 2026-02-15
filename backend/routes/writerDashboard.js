@@ -21,11 +21,11 @@ router.get('/leaderboard', async (req, res) => {
         }
       ],
       where: {
-        status: { [Op.or]: ['Completed', 'completed'] },
+        status: { [Op.in]: ['Completed', 'completed'] },
         writerId: { [Op.ne]: null }
       },
-      group: ['writerId'],
-      order: [[sequelize.literal('totalEarnings'), 'DESC']],
+      group: ['writerId', 'Writer.id', 'Writer.name'],
+      order: [[sequelize.literal('sum("writerPrice")'), 'DESC']],
       limit: 10
     });
 

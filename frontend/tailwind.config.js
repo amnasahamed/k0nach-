@@ -37,7 +37,9 @@ export default {
           950: '#01040a',
         },
         success: {
+          50: '#f0fdf4',
           100: '#e8f5e9',
+          200: '#bbf7d0',
           500: '#34C759', // Apple System Green
           DEFAULT: '#34C759',
           800: '#1B5E20',

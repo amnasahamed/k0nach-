@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --mode production",
+    "vercel-build": "vite build --mode production",
     "preview": "vite preview",
     "lint": "echo 'Linting would go here'",
     "type-check": "tsc --noEmit"
@@ -16,6 +17,7 @@
     "axios": "^1.7.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "react-is": "^19.2.4",
     "react-router-dom": "^7.11.0",
     "recharts": "^3.6.0"
   },

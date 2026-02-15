@@ -1,14 +1,29 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const path = require('path');
 
-// Initialize Sequelize with SQLite
-// Use environment variable for database path, defaulting to ./database.sqlite
-const dbPath = process.env.DB_PATH || path.join(__dirname, 'database.sqlite');
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: dbPath,
-  logging: false // Set to console.log to see SQL queries
-});
+// Initialize Sequelize - use PostgreSQL if DATABASE_URL is set (Vercel/production),
+// otherwise fall back to SQLite for local development
+let sequelize;
+
+if (process.env.DATABASE_URL) {
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
+    logging: false
+  });
+} else {
+  const dbPath = process.env.DB_PATH || path.join(__dirname, 'database.sqlite');
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: dbPath,
+    logging: false
+  });
+}
 
 // --- Models ---
 
@@ -350,7 +365,7 @@ const updateWriterStats = async (writerId) => {
     const completedAssignments = await Assignment.findAll({
       where: {
         writerId,
-        status: { [Sequelize.Op.or]: ['Completed', 'completed'] }
+        status: { [Sequelize.Op.in]: ['Completed', 'completed'] }
       }
     });
 
