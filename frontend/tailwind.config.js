@@ -69,10 +69,22 @@ export default {
         'card': '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
         'card-hover': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
         'input': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        'premium': '0 10px 30px -10px rgb(0 0 0 / 0.1), 0 4px 10px -5px rgb(0 0 0 / 0.05)',
+        'glow-primary': '0 0 20px rgb(0 122 255 / 0.4)',
+        'glow-success': '0 0 20px rgb(52 199 89 / 0.4)',
       },
       borderRadius: {
         'xl': '0.75rem',
         '2xl': '1rem',
+      },
+      animation: {
+        'spin-fast': 'spin 0.8s linear infinite',
+        'bounce-soft': 'bounce 1s infinite',
+        'pulse-soft': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      transitionTimingFunction: {
+        'apple': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'smooth': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
       }
     },
   },

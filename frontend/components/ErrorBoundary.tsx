@@ -2,20 +2,23 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 
 interface Props {
   children: ReactNode;
+  fallback?: ReactNode;
 }
 
 interface State {
   hasError: boolean;
   error: Error | null;
+  errorInfo: ErrorInfo | null;
 }
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
-    error: null
+    error: null,
+    errorInfo: null
   };
 
-  public static getDerivedStateFromError(error: Error): State {
+  public static getDerivedStateFromError(error: Error): Partial<State> {
     return {
       hasError: true,
       error
@@ -24,40 +27,69 @@ class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
+    this.setState({ errorInfo });
+    
+    // Log to error tracking service in production
+    if (process.env.NODE_ENV === 'production') {
+      // You can integrate with Sentry, LogRocket, etc. here
+      console.error('Production error:', { error, errorInfo });
+    }
   }
+
+  private handleReset = () => {
+    this.setState({ hasError: false, error: null, errorInfo: null });
+  };
 
   public render() {
     if (this.state.hasError) {
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
+
       return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-ios-lg p-8 max-w-md w-full">
-            <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
-              <svg className="w-8 h-8 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        <div className="min-h-screen bg-gradient-to-br from-secondary-50 to-secondary-100 flex items-center justify-center p-4">
+          <div className="bg-white rounded-apple-lg shadow-ios-lg p-8 max-w-md w-full animate-fade-in">
+            <div className="flex items-center justify-center w-16 h-16 bg-danger-100 rounded-2xl mx-auto mb-4 shadow-ios">
+              <svg className="w-8 h-8 text-danger-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 text-center mb-2">
+            <h1 className="text-2xl font-bold text-secondary-900 text-center mb-2 tracking-tight">
               Something went wrong
             </h1>
-            <p className="text-slate-600 text-center mb-6">
-              We encountered an unexpected error. Please try refreshing the page.
+            <p className="text-secondary-600 text-center text-sm mb-6">
+              We encountered an unexpected error. Please try refreshing the page or contact support if the issue persists.
             </p>
-            {this.state.error && (
-              <details className="mb-6 p-4 bg-slate-50 rounded-xl">
-                <summary className="cursor-pointer text-sm font-semibold text-slate-700 mb-2">
-                  Error details
+            
+            {process.env.NODE_ENV === 'development' && this.state.error && (
+              <details className="mb-6 p-3 bg-danger-50 border border-danger-200 rounded-apple">
+                <summary className="cursor-pointer text-xs font-semibold text-danger-700 mb-2 select-none">
+                  Error details (Development Only)
                 </summary>
-                <pre className="text-xs text-slate-600 overflow-auto">
+                <pre className="text-xs text-danger-600 overflow-auto font-mono whitespace-pre-wrap break-words">
                   {this.state.error.toString()}
+                  {this.state.errorInfo?.componentStack}
                 </pre>
               </details>
             )}
-            <button
-              onClick={() => window.location.reload()}
-              className="w-full bg-primary text-white font-semibold py-3 px-4 rounded-xl hover:opacity-90 transition-opacity"
-            >
-              Refresh Page
-            </button>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={this.handleReset}
+                className="flex-1 px-4 py-3 bg-primary-600 text-white rounded-apple font-medium hover:bg-primary-700 active:scale-95 transition-all duration-200 shadow-ios hover:shadow-ios-md"
+              >
+                Try Again
+              </button>
+              <button
+                onClick={() => {
+                  this.handleReset();
+                  window.location.href = '/';
+                }}
+                className="flex-1 px-4 py-3 bg-secondary-100 text-secondary-900 rounded-apple font-medium hover:bg-secondary-200 active:scale-95 transition-all duration-200"
+              >
+                Go Home
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -68,3 +100,4 @@ class ErrorBoundary extends Component<Props, State> {
 }
 
 export default ErrorBoundary;
+
