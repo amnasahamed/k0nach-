@@ -13,14 +13,38 @@ const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-for-dev';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
-// Validate environment variables
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'database.sqlite');
-console.log(`Database path: ${DB_PATH}`);
-console.log(`Server will run on port: ${PORT}`);
-
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// --- Database Initialization (for serverless) ---
+let dbReady = false;
+let dbInitPromise = null;
+
+const initDb = () => {
+    if (dbInitPromise) return dbInitPromise;
+    dbInitPromise = sequelize.sync().then(() => {
+        console.log('Database synced with schema updates');
+        dbReady = true;
+    }).catch(err => {
+        console.error('Database sync failed:', err);
+        dbInitPromise = null;
+        throw err;
+    });
+    return dbInitPromise;
+};
+
+// Ensure DB is ready before handling API requests
+app.use('/api', async (req, res, next) => {
+    if (!dbReady) {
+        try {
+            await initDb();
+        } catch (err) {
+            return res.status(503).json({ error: 'Database initialization failed' });
+        }
+    }
+    next();
+});
 
 // --- Authentication Middleware ---
 
@@ -65,9 +89,6 @@ const ASSIGNMENT_FIELDS = [
     'isDissertation', 'totalChapters', 'chapters', 'description',
     'activityLog', 'paymentHistory', 'statusHistory', 'attachments'
 ];
-
-// Serve static files from the frontend build directory
-app.use(express.static(path.join(__dirname, 'dist')));
 
 // --- API Routes ---
 
@@ -208,9 +229,9 @@ app.delete('/api/assignments/:id', authenticateToken, isAdmin, async (req, res) 
 // Bulk operations for data management
 app.post('/api/clear-all', authenticateToken, isAdmin, async (req, res) => {
     try {
-        await Assignment.destroy({ where: {}, truncate: true });
-        await Writer.destroy({ where: {}, truncate: true });
-        await Student.destroy({ where: {}, truncate: true });
+        await Assignment.destroy({ where: {} });
+        await Writer.destroy({ where: {} });
+        await Student.destroy({ where: {} });
         res.json({ success: true, message: 'All data cleared' });
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
@@ -256,11 +277,6 @@ app.post('/api/bulk-import', authenticateToken, isAdmin, async (req, res) => {
     }
 });
 
-// Catch-all handler to serve the React app for any other route
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
-});
-
 // Global error handler
 app.use((err, req, res, next) => {
     console.error('Unhandled error:', err);
@@ -270,14 +286,22 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Initialize Database and Start Server
-// Use alter: true to update schema (add completedAt) without dropping data
-sequelize.sync().then(() => {
-    console.log('Database synced with schema updates');
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+// Start server only when running directly (not as a Vercel serverless function)
+if (require.main === module) {
+    initDb().then(() => {
+        // Serve static files from the frontend build directory (local dev only)
+        app.use(express.static(path.join(__dirname, 'dist')));
+        app.get('*', (req, res) => {
+            res.sendFile(path.join(__dirname, 'dist/index.html'));
+        });
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    }).catch(err => {
+        console.error('Failed to start server:', err);
+        process.exit(1);
     });
-}).catch(err => {
-    console.error('Database sync failed:', err);
-    process.exit(1);
-});
+}
+
+module.exports = app;

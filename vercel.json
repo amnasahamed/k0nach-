@@ -1,24 +1,26 @@
 {
-  "buildCommand": "cd frontend && npm run build",
-  "installCommand": "npm install --legacy-peer-deps && cd frontend && npm install --legacy-peer-deps",
-  "outputDirectory": "frontend/dist",
-  "framework": "vite",
-  "env": {
-    "VITE_API_URL": "@api_url",
-    "GEMINI_API_KEY": "@gemini_api_key"
-  },
-  "env_aliases": {
-    "api_url": "VITE_API_URL",
-    "gemini_api_key": "GEMINI_API_KEY"
-  },
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "destination": "http://localhost:3000/api/$1"
+      "dest": "/api/index.js"
     },
     {
       "src": "/(.*)",
-      "destination": "/index.html"
+      "dest": "/frontend/$1"
     }
   ],
   "headers": [
@@ -39,10 +41,9 @@
         },
         {
           "key": "Access-Control-Allow-Headers",
-          "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+          "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
         }
       ]
     }
-  ],
-  "public": true
+  ]
 }
